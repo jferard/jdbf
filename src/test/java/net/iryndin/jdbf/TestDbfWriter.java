@@ -16,9 +16,9 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class TestDbfWriter {
-    private final Map<String, Object> valueMap = new HashMap<>();
+    private final Map<String, Object> valueMap = new HashMap<String, Object>();
     private String filePath;
-    private List<DbfField> fields = new ArrayList<>();
+    private List<DbfField> fields = new ArrayList<DbfField>();
 
     public DbfField addCharDBFField(String name, int length) {
         final DbfField fld = new DbfField();

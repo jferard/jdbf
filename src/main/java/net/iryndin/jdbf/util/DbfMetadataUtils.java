@@ -51,8 +51,12 @@ public class DbfMetadataUtils {
 //		
 //	}
 
-    public static void fillHeaderFields(DbfMetadata metadata, byte[] headerBytes) {
-        metadata.setType(DbfFileTypeEnum.fromInt(headerBytes[0]));
+    public static void fillHeaderFields(DbfMetadata metadata, byte[] headerBytes) throws IOException {
+        final DbfFileTypeEnum fileType = DbfFileTypeEnum.fromInt(headerBytes[0]);
+        if (fileType == null)
+        	throw new IOException("The file is corrupted or it's not a dbf file");
+        	
+		metadata.setType(fileType);
         metadata.setUpdateDate(parseHeaderUpdateDate(headerBytes[1], headerBytes[2], headerBytes[3], metadata.getType()));
         metadata.setRecordsQty(BitUtils.makeInt(headerBytes[4], headerBytes[5], headerBytes[6], headerBytes[7]));
         metadata.setFullHeaderLength(BitUtils.makeInt(headerBytes[8], headerBytes[9]));
@@ -75,12 +79,14 @@ public class DbfMetadataUtils {
     }
 
     public static void readFields(DbfMetadata metadata, InputStream inputStream) throws IOException {
-        List<DbfField> fields = new ArrayList<>();
+        List<DbfField> fields = new ArrayList<DbfField>();
         byte[] fieldBytes = new byte[JdbfUtils.FIELD_RECORD_LENGTH];
         int headerLength = 0;
         int fieldLength = 0;
         while (true) {
-            inputStream.read(fieldBytes);
+            if (inputStream.read(fieldBytes) != JdbfUtils.FIELD_RECORD_LENGTH)
+            	throw new IOException("The file is corrupted or it's not a dbf file");
+            
             DbfField field = createDbfField(fieldBytes);
             fields.add(field);
 
@@ -88,7 +94,11 @@ public class DbfMetadataUtils {
             headerLength += fieldBytes.length;
 
             long oldAvailable = inputStream.available();
+            
             int terminator = inputStream.read();
+            if (terminator == -1)
+            	throw new IOException("The file is corrupted or it's not a dbf file");
+
             if (terminator == JdbfUtils.HEADER_TERMINATOR) {
                 break;
             } else {

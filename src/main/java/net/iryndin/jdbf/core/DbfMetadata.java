@@ -71,7 +71,7 @@ public class DbfMetadata {
 	}
 	
 	private void processFields(List<DbfField> fields) {
-		fieldMap = new LinkedHashMap<>(fields.size()*2);
+		fieldMap = new LinkedHashMap<String, DbfField>(fields.size()*2);
 		int offset = 1;
 		for (DbfField f : fields) {
 			// 1. count offset
