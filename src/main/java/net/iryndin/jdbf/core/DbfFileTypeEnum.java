@@ -1,6 +1,7 @@
 package net.iryndin.jdbf.core;
 
 public enum DbfFileTypeEnum {
+	Undefined(0x0, "Undefined"),
 	FoxBASE1(0x02,"FoxBASE"),
 	FoxBASEPlus1(0x03,"FoxBASE+/Dbase III plus, no memo"),
 	VisualFoxPro1(0x30, "Visual FoxPro"),
@@ -28,7 +29,7 @@ public enum DbfFileTypeEnum {
 				return e;
 			}
 		}
-		return null;
+		return DbfFileTypeEnum.Undefined;
 	}
 	
 	public byte toByte() {

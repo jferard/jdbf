@@ -53,7 +53,7 @@ public class DbfMetadataUtils {
 
     public static void fillHeaderFields(DbfMetadata metadata, byte[] headerBytes) throws IOException {
         final DbfFileTypeEnum fileType = DbfFileTypeEnum.fromInt(headerBytes[0]);
-        if (fileType == null)
+        if (fileType == DbfFileTypeEnum.Undefined)
         	throw new IOException("The file is corrupted or it's not a dbf file");
         	
 		metadata.setType(fileType);
